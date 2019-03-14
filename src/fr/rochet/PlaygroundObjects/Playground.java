@@ -1,4 +1,4 @@
-package fr.rochet;
+package fr.rochet.PlaygroundObjects;
 
 import fr.rochet.Objects.Enemy;
 import fr.rochet.Objects.Exit;
@@ -22,6 +22,7 @@ public class Playground {
     private List<Exit> exits;
 
     //<editor-fold desc="Fonctions d'initialisation">
+
     public Playground(int width, int height) {
         this.innerWidth = width;
         this.innerHeight = height;
@@ -93,6 +94,7 @@ public class Playground {
         int gameResult;
         while ((gameResult = isGameOver()) == 0) {
             players.forEach(player -> player.move(obstacles, exits));
+            enemies.forEach(enemy -> enemy.move(players, obstacles, enemies));
             printConsole();
         }
         if (gameResult < 0) {

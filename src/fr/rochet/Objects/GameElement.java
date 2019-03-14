@@ -1,43 +1,30 @@
 package fr.rochet.Objects;
 
-public abstract class GameElement {
+import fr.rochet.PlaygroundObjects.Frame;
 
-    private int x;
-    private int y;
+public abstract class GameElement extends Frame {
+
     private ElementType type;
 
     public GameElement(int x, int y, ElementType type) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
         this.type = type;
     }
 
-    public boolean isAtSamePosition(GameElement otherElement) {
-        return this.x == otherElement.x && this.y == otherElement.y;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
     public void moveUp() {
-        this.y--;
+        this.setY(this.getY() - 1);
     }
 
     public void moveDown() {
-        this.y++;
+        this.setY(this.getY() + 1);
     }
 
     public void moveRight() {
-        this.x++;
+        this.setX(this.getX() + 1);
     }
 
     public void moveLeft() {
-        this.x--;
+        this.setX(this.getX() - 1);
     }
 
     public ElementType getType() {
