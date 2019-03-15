@@ -21,6 +21,11 @@ public class Enemy extends GameElement {
         Player closestPlayer = getClosestPlayer(players);
 
         if (closestPlayer != null) {
+            if (Math.abs(closestPlayer.getX() - this.getX()) + Math.abs(closestPlayer.getY() - this.getY()) == 0) {
+                // Un joueur est sur la position de l'ennemi. Pas besoin de le bouger
+                return;
+            }
+
             Set<FrameForAstarAlgorithm> possiblePath = new HashSet<>();
             Set<FrameForAstarAlgorithm> testedPath = new HashSet<>();
 
@@ -68,9 +73,7 @@ public class Enemy extends GameElement {
                     }
                 }
             }
-
         }
-
     }
 
     private Player getClosestPlayer(List<Player> players) {

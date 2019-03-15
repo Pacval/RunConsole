@@ -72,8 +72,14 @@ public class Playground {
         int gameResult;
         while ((gameResult = isGameOver()) == 0) {
             printConsole();
-            players.forEach(player -> player.move(obstacles, exits));
-            enemies.forEach(enemy -> enemy.moveWithAstarAlgoAndAllVision(players, obstacles, enemies));
+            players.forEach(player -> {
+                player.move(obstacles, exits);
+                printConsole();
+            });
+            enemies.forEach(enemy -> {
+                enemy.moveWithAstarAlgoAndAllVision(players, obstacles, enemies);
+                printConsole();
+            });
         }
 
         // Fin du jeu
