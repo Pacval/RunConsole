@@ -6,6 +6,7 @@ import fr.rochet.objects.Exit;
 import fr.rochet.objects.Obstacle;
 import fr.rochet.objects.Player;
 
+import javax.swing.text.MutableAttributeSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,8 @@ public class Playground {
 
     private int width;
     private int height;
+
+    private int visionRange;
 
     private List<Player> players;
     private List<Enemy> enemies;
@@ -35,6 +38,8 @@ public class Playground {
 
         this.height = level.getMap().length;
         this.width = level.getMap()[0].length;
+
+        this.visionRange = 5; // A voir plus tard comment paramétré. Constant ou variable ?
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -104,23 +109,31 @@ public class Playground {
      * Permet d'afficher provisoirement le terrain de jeu dans la console
      * Peut etre amélioré (bordures (obstacles -> évite de sortir du terrain))
      */
-    public void printConsole() {
+    private void printConsole() {
         clearConsole();
         for (int j = 0; j < height; j++) {
             for (int i = 0; i < width; i++) {
                 int finalX = i;
                 int finalY = j;
-                if (enemies.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
-                    System.out.print('E');
-                } else if (players.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
-                    System.out.print('P');
-                } else if (exits.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
-                    System.out.print('X');
-                } else if (obstacles.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
-                    System.out.print('#');
+
+                // On vérifie si 1 joueur à la vision sur le point
+                if (players.stream().anyMatch(player -> Math.abs(player.getX() - finalX) + Math.abs(player.getY() - finalY) <= visionRange)) {
+                    if (enemies.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
+                        System.out.print('E');
+                    } else if (players.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
+                        System.out.print('P');
+                    } else if (exits.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
+                        System.out.print('X');
+                    } else if (obstacles.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
+                        System.out.print('#');
+                    } else {
+                        System.out.print(' ');
+                    }
                 } else {
-                    System.out.print(' ');
+                    System.out.print('o');
                 }
+
+
             }
             System.out.println();
         }
@@ -137,7 +150,7 @@ public class Playground {
                 Runtime.getRuntime().exec("clear");
             }
         } catch (Exception excpt) {
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < 20; i++) {
                 System.out.println();
             }
         }
