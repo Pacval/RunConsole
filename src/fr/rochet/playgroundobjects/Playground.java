@@ -1,20 +1,18 @@
-package fr.rochet.PlaygroundObjects;
+package fr.rochet.playgroundobjects;
 
-import fr.rochet.Objects.Enemy;
-import fr.rochet.Objects.Exit;
-import fr.rochet.Objects.Obstacle;
-import fr.rochet.Objects.Player;
+import fr.rochet.levels.Level;
+import fr.rochet.objects.Enemy;
+import fr.rochet.objects.Exit;
+import fr.rochet.objects.Obstacle;
+import fr.rochet.objects.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Playground {
 
-    private int innerWidth;
-    private int innerHeight;
-
-    private int totalWidth;
-    private int totalHeight;
+    private int width;
+    private int height;
 
     private List<Player> players;
     private List<Enemy> enemies;
@@ -23,12 +21,7 @@ public class Playground {
 
     //<editor-fold desc="Fonctions d'initialisation">
 
-    public Playground(int width, int height) {
-        this.innerWidth = width;
-        this.innerHeight = height;
-        this.totalWidth = width + 2;
-        this.totalHeight = height + 2;
-
+    public Playground() {
         this.players = new ArrayList<>();
         this.enemies = new ArrayList<>();
         this.obstacles = new ArrayList<>();
@@ -36,53 +29,33 @@ public class Playground {
     }
 
     /**
-     * On pourra passer le nombre de players, d'ennemis et d'objet
-     * ou alors passer la difficulté et la fonction sait à quoi ça correspond
+     * On initialise le niveau avec l'objet level passé
      */
-    public void initialize() {
+    public void initialize(Level level) {
 
-        // sortie
-        exits.add(new Exit(totalWidth - 1, totalHeight / 2));
+        this.height = level.getMap().length;
+        this.width = level.getMap()[0].length;
 
-        /* ----- LA POSITION DE TOUS LES AUTRES OBJETS DOIT ETRE ENTRE 1 ET INNERHEIGHT/WIDTH ----- */
-
-        // joueur(s)
-        players.add(new Player(1, 1));
-
-        // ennemi(s)
-        enemies.add(new Enemy(2, 4));
-
-        // obstacle(s)
-        obstacles.add(new Obstacle(2, 2));
-
-        // initialisation bordures
-        this.createBorders();
-    }
-
-    private void createBorders() {
-        for (int i = 0; i < totalWidth; i++) {
-            Obstacle obstacleUp = new Obstacle(i, 0);
-            if (exits.stream().noneMatch(exit -> exit.isAtSamePosition(obstacleUp))) {
-                obstacles.add(obstacleUp);
-            }
-
-            Obstacle obstacleDown = new Obstacle(i, totalHeight - 1);
-            if (exits.stream().noneMatch(exit -> exit.isAtSamePosition(obstacleDown))) {
-                obstacles.add(obstacleDown);
-            }
-        }
-        for (int i = 1; i < totalWidth - 1; i++) {
-            Obstacle obstacleLeft = new Obstacle(0, i);
-            if (exits.stream().noneMatch(exit -> exit.isAtSamePosition(obstacleLeft))) {
-                obstacles.add(obstacleLeft);
-            }
-
-            Obstacle obstacleRight = new Obstacle(totalWidth - 1, i);
-            if (exits.stream().noneMatch(exit -> exit.isAtSamePosition(obstacleRight))) {
-                obstacles.add(obstacleRight);
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                switch (level.getMap()[y][x]) {
+                    case "#":
+                        obstacles.add(new Obstacle(x, y));
+                        break;
+                    case "P":
+                        players.add(new Player(x, y));
+                        break;
+                    case "E":
+                        enemies.add(new Enemy(x, y));
+                        break;
+                    case "X":
+                        exits.add(new Exit(x, y));
+                        break;
+                }
             }
         }
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Fonctions principales de jeu">
@@ -93,10 +66,13 @@ public class Playground {
     public void play() {
         int gameResult;
         while ((gameResult = isGameOver()) == 0) {
-            players.forEach(player -> player.move(obstacles, exits));
-            enemies.forEach(enemy -> enemy.move(players, obstacles, enemies));
             printConsole();
+            players.forEach(player -> player.move(obstacles, exits));
+            enemies.forEach(enemy -> enemy.moveWithAstarAlgoAndAllVision(players, obstacles, enemies));
         }
+
+        // Fin du jeu
+        printConsole();
         if (gameResult < 0) {
             System.out.println("Vous vous êtes fait dévoré tout cru");
         } else {
@@ -129,9 +105,9 @@ public class Playground {
      * Peut etre amélioré (bordures (obstacles -> évite de sortir du terrain))
      */
     public void printConsole() {
-        // clearConsole();
-        for (int j = 0; j < totalHeight; j++) {
-            for (int i = 0; i < totalWidth; i++) {
+        clearConsole();
+        for (int j = 0; j < height; j++) {
+            for (int i = 0; i < width; i++) {
                 int finalX = i;
                 int finalY = j;
                 if (enemies.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {

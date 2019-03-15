@@ -1,4 +1,4 @@
-package fr.rochet.Objects;
+package fr.rochet.objects;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,6 +15,7 @@ public class Player extends GameElement {
         this.isOut = false;
     }
 
+    //<editor-fold desc="Fonctions de mouvement">
     public void move(List<Obstacle> obstacles, List<Exit> exits) {
 
         // On check les mouvements possibles en fonction des obstacles
@@ -69,6 +70,7 @@ public class Player extends GameElement {
             this.isOut = true;
         }
     }
+    //</editor-fold>
 
     //<editor-fold desc="Getters/Setters">
     public boolean isOut() {

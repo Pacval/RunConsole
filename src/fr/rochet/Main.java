@@ -1,15 +1,20 @@
 package fr.rochet;
 
-import fr.rochet.PlaygroundObjects.Playground;
+import fr.rochet.levels.Level;
+import fr.rochet.levels.LevelDifficulty;
+import fr.rochet.playgroundobjects.Playground;
 
 public class Main {
 
     public static void main(String[] args) {
-        Playground playground = new Playground(5, 5);
+        // Chargement du jeu
+        Playground playground = new Playground();
 
-        playground.initialize();
+        // Sélection niveau
+        Level level = new Level(LevelDifficulty.EASY, 1);
 
-        playground.printConsole();
+        // Lancement du jeu
+        playground.initialize(level);
 
         playground.play();
     }

@@ -1,4 +1,4 @@
-package fr.rochet.Objects;
+package fr.rochet.objects;
 
 public class Obstacle extends GameElement {
 

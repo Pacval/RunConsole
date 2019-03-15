@@ -1,6 +1,6 @@
-package fr.rochet.Objects;
+package fr.rochet.objects;
 
-import fr.rochet.PlaygroundObjects.Frame;
+import fr.rochet.playgroundobjects.Frame;
 
 public abstract class GameElement extends Frame {
 

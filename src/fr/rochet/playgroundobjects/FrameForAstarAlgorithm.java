@@ -1,6 +1,4 @@
-package fr.rochet.PlaygroundObjects;
-
-import java.util.Objects;
+package fr.rochet.playgroundobjects;
 
 public class FrameForAstarAlgorithm extends Frame{
 

@@ -1,6 +1,6 @@
-package fr.rochet.Objects;
+package fr.rochet.objects;
 
-import fr.rochet.PlaygroundObjects.FrameForAstarAlgorithm;
+import fr.rochet.playgroundobjects.FrameForAstarAlgorithm;
 
 import java.util.*;
 
@@ -10,13 +10,14 @@ public class Enemy extends GameElement {
         super(x, y, ElementType.ENEMY);
     }
 
+    //<editor-fold desc="Fonctions de mouvement">
     /**
      * On part du principe que l'ennemi a vision sur tout le terrain, comme le joueur. Il va donc utiliser l'algorithme A* pour aller le plus vite vers le joueur
      *
      * @param players   liste des joueurs
      * @param obstacles liste des obstacles
      */
-    public void move(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) {
+    public void moveWithAstarAlgoAndAllVision(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) {
         Player closestPlayer = getClosestPlayer(players);
 
         if (closestPlayer != null) {
@@ -101,4 +102,5 @@ public class Enemy extends GameElement {
             }
         }
     }
+    //</editor-fold>
 }

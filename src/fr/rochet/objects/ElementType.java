@@ -1,4 +1,4 @@
-package fr.rochet.Objects;
+package fr.rochet.objects;
 
 public enum ElementType {
     PLAYER,

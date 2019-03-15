@@ -1,4 +1,4 @@
-package fr.rochet.PlaygroundObjects;
+package fr.rochet.playgroundobjects;
 
 public class Frame {
 
