@@ -49,7 +49,6 @@ public class Player extends GameElement {
         // Mouvement
         switch (move.toUpperCase()) {
             case "S":
-                System.out.println("Vous restez parfaitement immobile");
                 break;
             case "U":
                 this.moveUp();

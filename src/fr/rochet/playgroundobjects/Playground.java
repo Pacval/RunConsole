@@ -38,8 +38,7 @@ public class Playground {
 
         this.height = level.getMap().length;
         this.width = level.getMap()[0].length;
-
-        this.visionRange = 5; // A voir plus tard comment paramétré. Constant ou variable ?
+        this.visionRange = level.getVisionDistance();
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -123,7 +122,7 @@ public class Playground {
                 int finalY = j;
 
                 // On vérifie si 1 joueur à la vision sur le point
-                if (players.stream().anyMatch(player -> Math.abs(player.getX() - finalX) + Math.abs(player.getY() - finalY) <= visionRange)) {
+                if (visionRange == 0 || players.stream().anyMatch(player -> Math.pow(Math.abs(player.getX() - finalX), 2) + Math.pow(Math.abs(player.getY() - finalY), 2) < Math.pow(visionRange, 2))) {
                     if (enemies.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
                         System.out.print('E');
                     } else if (players.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {

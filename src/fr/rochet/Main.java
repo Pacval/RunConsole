@@ -1,7 +1,6 @@
 package fr.rochet;
 
 import fr.rochet.levels.Level;
-import fr.rochet.levels.LevelDifficulty;
 import fr.rochet.playgroundobjects.Playground;
 
 public class Main {
@@ -11,7 +10,7 @@ public class Main {
         Playground playground = new Playground();
 
         // Sélection niveau
-        Level level = new Level(LevelDifficulty.EASY, 1);
+        Level level = new Level();
 
         // Lancement du jeu
         playground.initialize(level);
