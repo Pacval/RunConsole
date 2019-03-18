@@ -76,7 +76,7 @@ public class Playground {
                 printConsole();
             });
             enemies.forEach(enemy -> {
-                enemy.moveWithAstarAlgoAndAllVision(players, obstacles, enemies);
+                enemy.move(players, obstacles, enemies);
                 printConsole();
             });
         }
@@ -137,8 +137,6 @@ public class Playground {
                 } else {
                     System.out.print('o');
                 }
-
-
             }
             System.out.println();
         }
