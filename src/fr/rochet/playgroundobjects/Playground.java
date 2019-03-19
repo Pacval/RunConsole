@@ -5,6 +5,7 @@ import fr.rochet.objects.Enemy;
 import fr.rochet.objects.Exit;
 import fr.rochet.objects.Obstacle;
 import fr.rochet.objects.Player;
+import fr.rochet.utils.RunGameException;
 
 import javax.swing.text.MutableAttributeSet;
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class Playground {
     /**
      * Fonction principale déroulant le jeu sur le terrain
      */
-    public void play() {
+    public void play() throws RunGameException {
         int gameResult;
         while ((gameResult = isGameOver()) == 0) {
             printConsole();
@@ -75,10 +76,10 @@ public class Playground {
                 player.move(obstacles, exits);
                 printConsole();
             });
-            enemies.forEach(enemy -> {
+            for(Enemy enemy : enemies) {
                 enemy.move(players, obstacles, enemies);
                 printConsole();
-            });
+            }
         }
 
         // Fin du jeu

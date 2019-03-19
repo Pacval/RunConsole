@@ -2,6 +2,7 @@ package fr.rochet;
 
 import fr.rochet.levels.Level;
 import fr.rochet.playgroundobjects.Playground;
+import fr.rochet.utils.RunGameException;
 
 public class Main {
 
@@ -15,6 +16,10 @@ public class Main {
         // Lancement du jeu
         playground.initialize(level);
 
-        playground.play();
+        try {
+            playground.play();
+        } catch (RunGameException e) {
+            e.printStackTrace();
+        }
     }
 }

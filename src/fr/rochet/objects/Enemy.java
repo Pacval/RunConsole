@@ -2,6 +2,7 @@ package fr.rochet.objects;
 
 import fr.rochet.playgroundobjects.Frame;
 import fr.rochet.playgroundobjects.FrameForAstarAlgorithm;
+import fr.rochet.utils.RunGameException;
 
 import java.util.*;
 
@@ -21,7 +22,7 @@ public class Enemy extends GameElement {
      *
      * TODO : gérer l'intelligence de l'IA via variable de classe
      */
-    public void move(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) {
+    public void move(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
         this.moveWithAstarAlgoAndRestrictedCircleVision(players, obstacles, enemies);
     }
 
@@ -35,7 +36,7 @@ public class Enemy extends GameElement {
      * @param obstacles liste des obstacles
      * @param enemies   liste des ennemis
      */
-    private void moveWithAstarAlgoAndAllVision(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) {
+    private void moveWithAstarAlgoAndAllVision(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
         Player closestPlayer = players.stream().min(Comparator.comparing(x -> Math.abs(x.getX() - this.getX()) + Math.abs(x.getY() - this.getY()))).orElse(null);
 
         if (closestPlayer != null) {
@@ -58,7 +59,7 @@ public class Enemy extends GameElement {
      * @param obstacles liste des obstacles
      * @param enemies   liste des ennemis
      */
-    private void moveWithAstarAlgoAndRestrictedCircleVision(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) {
+    private void moveWithAstarAlgoAndRestrictedCircleVision(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
         Player closestPlayer = players.stream()
                 .filter(player -> Math.pow(Math.abs(player.getX() - this.getX()), 2) + Math.pow(Math.abs(player.getY() - this.getY()), 2) < Math.pow(visionRange, 2))
                 .min(Comparator.comparing(x -> Math.abs(x.getX() - this.getX()) + Math.abs(x.getY() - this.getY()))).orElse(null);
@@ -84,7 +85,7 @@ public class Enemy extends GameElement {
     /**
      * Déplace l'ennemi de 1 case vers la destination grâce à l'algorithme A*
      */
-    private void useAstarAlgo(Frame destination, List<Obstacle> obstacles, List<Enemy> enemies) {
+    private void useAstarAlgo(Frame destination, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
 
         // On vérifie qu'on est pas déjà à la destination
         if (Math.abs(destination.getX() - this.getX()) + Math.abs(destination.getY() - this.getY()) == 0) {
@@ -100,7 +101,7 @@ public class Enemy extends GameElement {
 
         boolean found = false;
         while (!possiblePath.isEmpty() && !found) {
-            currentFrame = possiblePath.stream().min(Comparator.comparing(FrameForAstarAlgorithm::getTotalDistance)).get(); // TODO : créer une classe pour catcher les possibles exceptions
+            currentFrame = possiblePath.stream().min(Comparator.comparing(FrameForAstarAlgorithm::getTotalDistance)).orElseThrow(() -> new RunGameException("[Algo A*] - Erreur lors de la récupération de la frame à tester"));
             possiblePath.remove(currentFrame);
 
             for (FrameForAstarAlgorithm adjFrame : getAdjacentFrames(currentFrame)) {
@@ -170,14 +171,14 @@ public class Enemy extends GameElement {
 
     //<editor-fold desc="Fonctions privées diverses">
 
-    private Frame selectRandomFreeFrame(List<Obstacle> obstacles) {
+    private Frame selectRandomFreeFrame(List<Obstacle> obstacles) throws RunGameException {
         Frame destination;
         Random randomGenerator = new Random();
 
         do {
             destination = new Frame(
-                    randomGenerator.nextInt(obstacles.stream().mapToInt(Frame::getX).max().orElse(0)), // TODO revoir gestion d'erreur, on peut etre dans une boucle infinie là
-                    randomGenerator.nextInt(obstacles.stream().mapToInt(Frame::getY).max().orElse(0))
+                    randomGenerator.nextInt(obstacles.stream().mapToInt(Frame::getX).max().orElseThrow(() -> new RunGameException("[Ennemi] - Erreur lors de la génération d'un nombre aléatoire (getX)"))),
+                    randomGenerator.nextInt(obstacles.stream().mapToInt(Frame::getY).max().orElseThrow(() -> new RunGameException("[Ennemi] - Erreur lors de la génération d'un nombre aléatoire (getY)")))
             );
         } while (isFrameAnObstacle(destination, obstacles));
 
