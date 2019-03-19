@@ -4,5 +4,6 @@ public enum ElementType {
     PLAYER,
     ENEMY,
     OBSTACLE,
-    EXIT
+    EXIT,
+    OBJECT
 }

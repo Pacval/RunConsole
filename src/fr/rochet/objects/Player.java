@@ -1,21 +1,29 @@
 package fr.rochet.objects;
 
+import fr.rochet.items.Inventory;
+import fr.rochet.items.ItemType;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Player extends GameElement {
 
     private boolean isOut;
 
+    private Inventory inventory;
+
     public Player(int x, int y) {
         super(x, y, ElementType.PLAYER);
         this.isOut = false;
+        this.inventory = new Inventory();
     }
 
     //<editor-fold desc="Fonctions de mouvement">
+
     public void move(List<Obstacle> obstacles, List<Exit> exits) {
 
         // On check les mouvements possibles en fonction des obstacles
@@ -69,11 +77,18 @@ public class Player extends GameElement {
             this.isOut = true;
         }
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Getters/Setters">
+
     public boolean isOut() {
         return isOut;
     }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
     //</editor-fold>
 }

@@ -4,11 +4,11 @@ import fr.rochet.playgroundobjects.Frame;
 
 public abstract class GameElement extends Frame {
 
-    private ElementType type;
+    private ElementType elementType;
 
-    public GameElement(int x, int y, ElementType type) {
+    public GameElement(int x, int y, ElementType elementType) {
         super(x, y);
-        this.type = type;
+        this.elementType = elementType;
     }
 
     public void moveUp() {
@@ -27,7 +27,7 @@ public abstract class GameElement extends Frame {
         this.setX(this.getX() - 1);
     }
 
-    public ElementType getType() {
-        return type;
+    public ElementType getElementType() {
+        return elementType;
     }
 }

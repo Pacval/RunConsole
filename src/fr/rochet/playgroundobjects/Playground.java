@@ -1,5 +1,6 @@
 package fr.rochet.playgroundobjects;
 
+import fr.rochet.items.Torch;
 import fr.rochet.levels.Level;
 import fr.rochet.objects.Enemy;
 import fr.rochet.objects.Exit;
@@ -7,7 +8,6 @@ import fr.rochet.objects.Obstacle;
 import fr.rochet.objects.Player;
 import fr.rochet.utils.RunGameException;
 
-import javax.swing.text.MutableAttributeSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +22,7 @@ public class Playground {
     private List<Enemy> enemies;
     private List<Obstacle> obstacles;
     private List<Exit> exits;
+    private List<Torch> torches;
 
     //<editor-fold desc="Fonctions d'initialisation">
 
@@ -30,6 +31,7 @@ public class Playground {
         this.enemies = new ArrayList<>();
         this.obstacles = new ArrayList<>();
         this.exits = new ArrayList<>();
+        this.torches = new ArrayList<>();
     }
 
     /**
@@ -56,6 +58,9 @@ public class Playground {
                     case "X":
                         exits.add(new Exit(x, y));
                         break;
+                    case "T":
+                        torches.add(new Torch(x, y, 5)); // TODO : vision des torches. Constante ou paramètre niveau ?
+                        break;
                 }
             }
         }
@@ -71,14 +76,14 @@ public class Playground {
     public void play() throws RunGameException {
         int gameResult;
         while ((gameResult = isGameOver()) == 0) {
-            printConsole();
             players.forEach(player -> {
+                printConsole();
+                player.getInventory().printConsole();
                 player.move(obstacles, exits);
-                printConsole();
             });
-            for(Enemy enemy : enemies) {
-                enemy.move(players, obstacles, enemies);
+            for (Enemy enemy : enemies) {
                 printConsole();
+                enemy.move(players, obstacles, enemies);
             }
         }
 
@@ -111,6 +116,7 @@ public class Playground {
     //</editor-fold>
 
     //<editor-fold desc="Fonctions d'affichage">
+
     /**
      * Permet d'afficher provisoirement le terrain de jeu dans la console
      * Peut etre amélioré (bordures (obstacles -> évite de sortir du terrain))
@@ -123,13 +129,17 @@ public class Playground {
                 int finalY = j;
 
                 // On vérifie si 1 joueur à la vision sur le point
-                if (visionRange == 0 || players.stream().anyMatch(player -> Math.pow(Math.abs(player.getX() - finalX), 2) + Math.pow(Math.abs(player.getY() - finalY), 2) < Math.pow(visionRange, 2))) {
+                if (visionRange == 0
+                        || players.stream().anyMatch(player -> Math.pow(Math.abs(player.getX() - finalX), 2) + Math.pow(Math.abs(player.getY() - finalY), 2) < Math.pow(visionRange, 2))
+                        || torches.stream().anyMatch(torch -> Math.pow(Math.abs(torch.getX() - finalX), 2) + Math.pow(Math.abs(torch.getY() - finalY), 2) < Math.pow(torch.getLightRange(), 2))) {
                     if (enemies.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
                         System.out.print('E');
                     } else if (players.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
                         System.out.print('P');
                     } else if (exits.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
                         System.out.print('X');
+                    } else if (torches.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
+                        System.out.print('T');
                     } else if (obstacles.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
                         System.out.print('#');
                     } else {
