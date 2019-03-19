@@ -13,11 +13,13 @@ public class Main {
         // Sélection niveau
         Level level = new Level();
 
-        // Lancement du jeu
-        playground.initialize(level);
-
         try {
+
+            // Lancement du jeu
+            playground.initialize(level);
+
             playground.play();
+
         } catch (RunGameException e) {
             e.printStackTrace();
         }

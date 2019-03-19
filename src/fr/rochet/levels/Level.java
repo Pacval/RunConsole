@@ -1,5 +1,6 @@
 package fr.rochet.levels;
 
+import fr.rochet.utils.RunGameException;
 import org.apache.commons.io.FileUtils;
 
 import java.io.BufferedReader;
@@ -23,6 +24,7 @@ public class Level {
     }
 
     private void selectLevel() { // TODO : choix dans liste, pas choix à écrire
+        // choix dificulté
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String difficulty = "";
         while (!(difficulty.equals("E") || difficulty.equals("M") || difficulty.equals("H"))) {
@@ -40,23 +42,33 @@ public class Level {
             case "H": this.difficulty = LevelDifficulty.HARD; break;
         }
 
-        this.number = 2; // TODO : demander le numéro de niveau
+        // choix niveau
+        int levelNumber = 0;
+        while (levelNumber == 0) {
+            try {
+                System.out.print("Numéro niveau : ");
+                levelNumber = Integer.parseInt(br.readLine().toUpperCase());
+            } catch (IOException | NumberFormatException e) {
+                levelNumber = 0;
+            }
+        }
+        this.number = levelNumber;
     }
 
-    public String[][] getMap() {
+    public String[][] getMap() throws RunGameException {
         if (map == null) {
             this.loadMap();
         }
         return map;
     }
 
-    private void loadMap() {
+    private void loadMap() throws RunGameException {
         try {
             File levelFile = new File("src/fr/rochet/resources/levels/" + this.difficulty.name().toLowerCase() + "/" + number + ".lvl");
             String levelFileContent = FileUtils.readFileToString(levelFile, StandardCharsets.UTF_8);
             map = Arrays.stream(levelFileContent.split("\r\n")).map(x -> x.split("")).toArray(String[][]::new);
         } catch (IOException e) {
-            System.out.println("Erreur lors du chargement du niveau");
+            throw new RunGameException("Erreur lors du chargement du fichier niveau");
         }
     }
 

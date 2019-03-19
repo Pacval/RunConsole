@@ -36,7 +36,7 @@ public class Playground {
     /**
      * On initialise le niveau avec l'objet level passé
      */
-    public void initialize(Level level) {
+    public void initialize(Level level) throws RunGameException {
 
         this.height = level.getMap().length;
         this.width = level.getMap()[0].length;
