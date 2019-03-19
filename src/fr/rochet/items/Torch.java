@@ -2,14 +2,9 @@ package fr.rochet.items;
 
 public class Torch extends Item {
 
-    private int lightRange;
+    public static int LIGHT_RANGE = 5;
 
-    public Torch(int x, int y, int lightRange) {
+    public Torch(int x, int y) {
         super(x, y, ItemType.TORCH);
-        this.lightRange = lightRange;
-    }
-
-    public int getLightRange() {
-        return lightRange;
     }
 }

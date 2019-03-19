@@ -1,5 +1,6 @@
 package fr.rochet.playgroundobjects;
 
+import fr.rochet.items.ItemType;
 import fr.rochet.items.Torch;
 import fr.rochet.levels.Level;
 import fr.rochet.objects.Enemy;
@@ -15,8 +16,6 @@ public class Playground {
 
     private int width;
     private int height;
-
-    private int visionRange;
 
     private List<Player> players;
     private List<Enemy> enemies;
@@ -41,7 +40,6 @@ public class Playground {
 
         this.height = level.getMap().length;
         this.width = level.getMap()[0].length;
-        this.visionRange = level.getVisionDistance();
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -50,7 +48,9 @@ public class Playground {
                         obstacles.add(new Obstacle(x, y));
                         break;
                     case "P":
-                        players.add(new Player(x, y));
+                        Player player = new Player(x, y, level.getVisionDistance());
+                        player.getInventory().addItem(ItemType.TORCH);
+                        players.add(player);
                         break;
                     case "E":
                         enemies.add(new Enemy(x, y));
@@ -59,7 +59,7 @@ public class Playground {
                         exits.add(new Exit(x, y));
                         break;
                     case "T":
-                        torches.add(new Torch(x, y, 5)); // TODO : vision des torches. Constante ou paramètre niveau ?
+                        torches.add(new Torch(x, y));
                         break;
                 }
             }
@@ -79,7 +79,7 @@ public class Playground {
             players.forEach(player -> {
                 printConsole();
                 player.getInventory().printConsole();
-                player.move(obstacles, exits);
+                player.move(obstacles, exits, torches);
             });
             for (Enemy enemy : enemies) {
                 printConsole();
@@ -128,10 +128,10 @@ public class Playground {
                 int finalX = i;
                 int finalY = j;
 
-                // On vérifie si 1 joueur à la vision sur le point
-                if (visionRange == 0
-                        || players.stream().anyMatch(player -> Math.pow(Math.abs(player.getX() - finalX), 2) + Math.pow(Math.abs(player.getY() - finalY), 2) < Math.pow(visionRange, 2))
-                        || torches.stream().anyMatch(torch -> Math.pow(Math.abs(torch.getX() - finalX), 2) + Math.pow(Math.abs(torch.getY() - finalY), 2) < Math.pow(torch.getLightRange(), 2))) {
+                // On vérifie si 1 joueur / torche à la vision sur le point
+                // Si un joueur possède une torche, on prend la distance d'éclairage de la torche autour de lui, car celle ci est plus grande que sa vision
+                if (players.stream().anyMatch(player -> Math.pow(Math.abs(player.getX() - finalX), 2) + Math.pow(Math.abs(player.getY() - finalY), 2) < Math.pow(player.carryTorch() ? Torch.LIGHT_RANGE : player.getVisionRange(), 2))
+                        || torches.stream().anyMatch(torch -> Math.pow(Math.abs(torch.getX() - finalX), 2) + Math.pow(Math.abs(torch.getY() - finalY), 2) < Math.pow(Torch.LIGHT_RANGE, 2))) {
                     if (enemies.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
                         System.out.print('E');
                     } else if (players.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {

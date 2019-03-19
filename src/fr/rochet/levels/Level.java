@@ -18,7 +18,7 @@ public class Level {
 
     public Level() {
         this.selectLevel();
-        this.visionDistance = 5; // TODO : à voir comment géré plus tard. Dans fichier niveau ?
+        this.visionDistance = 3; // TODO : à voir comment géré plus tard. Dans fichier niveau ?
         this.map = null;
     }
 
@@ -40,7 +40,7 @@ public class Level {
             case "H": this.difficulty = LevelDifficulty.HARD; break;
         }
 
-        this.number = 1; // TODO : demander le numéro de niveau
+        this.number = 2; // TODO : demander le numéro de niveau
     }
 
     public String[][] getMap() {

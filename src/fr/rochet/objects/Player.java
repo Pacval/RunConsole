@@ -2,33 +2,37 @@ package fr.rochet.objects;
 
 import fr.rochet.items.Inventory;
 import fr.rochet.items.ItemType;
+import fr.rochet.items.Torch;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class Player extends GameElement {
 
     private boolean isOut;
-
     private Inventory inventory;
+    private int visionRange;
 
-    public Player(int x, int y) {
+    public Player(int x, int y, int visionRange) {
         super(x, y, ElementType.PLAYER);
         this.isOut = false;
         this.inventory = new Inventory();
+        this.visionRange = visionRange;
     }
 
     //<editor-fold desc="Fonctions de mouvement">
 
-    public void move(List<Obstacle> obstacles, List<Exit> exits) {
+    public void move(List<Obstacle> obstacles, List<Exit> exits, List<Torch> torches) {
 
         // On check les mouvements possibles en fonction des obstacles
         List<String> possibleMoves = new ArrayList<>();
         possibleMoves.add("S"); // STAY
+        if (torches.stream().noneMatch(pos -> pos.getX() == this.getX() && pos.getY() == this.getY() - 1)) {
+            possibleMoves.add("T"); // TORCH
+        }
         if (obstacles.stream().noneMatch(pos -> pos.getX() == this.getX() && pos.getY() == this.getY() - 1)) {
             possibleMoves.add("U"); // UP
         }
@@ -57,6 +61,11 @@ public class Player extends GameElement {
         // Mouvement
         switch (move.toUpperCase()) {
             case "S":
+                break;
+            case "T":
+                if (inventory.useItem(ItemType.TORCH)) {
+                    torches.add(new Torch(this.getX(), this.getY()));
+                }
                 break;
             case "U":
                 this.moveUp();
@@ -88,6 +97,14 @@ public class Player extends GameElement {
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    public boolean carryTorch() {
+        return inventory.getItems().get(ItemType.TORCH) > 0;
+    }
+
+    public int getVisionRange() {
+        return visionRange;
     }
 
     //</editor-fold>
