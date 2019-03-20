@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Player extends GameElement {
 
@@ -30,8 +31,11 @@ public class Player extends GameElement {
         // On check les mouvements possibles en fonction des obstacles
         List<String> possibleMoves = new ArrayList<>();
         possibleMoves.add("S"); // STAY
-        if (torches.stream().noneMatch(pos -> pos.getX() == this.getX() && pos.getY() == this.getY() - 1)) {
+        if (this.carryTorch() && torches.stream().noneMatch(pos -> pos.getX() == this.getX() && pos.getY() == this.getY())) {
             possibleMoves.add("T"); // TORCH
+        }
+        if (torches.stream().anyMatch(pos -> pos.getX() == this.getX() && pos.getY() == this.getY())){
+            possibleMoves.add("P"); // PICK UP // TODO : besoin d'un bouton que pour ramasser torches. Autres items se ramasseront en marchant dessus
         }
         if (obstacles.stream().noneMatch(pos -> pos.getX() == this.getX() && pos.getY() == this.getY() - 1)) {
             possibleMoves.add("U"); // UP
@@ -65,6 +69,13 @@ public class Player extends GameElement {
             case "T":
                 if (inventory.useItem(ItemType.TORCH)) {
                     torches.add(new Torch(this.getX(), this.getY()));
+                }
+                break;
+            case "P":
+                Optional<Torch> torchToPickUp = torches.stream().filter(torch -> torch.getX() == this.getX() && torch.getY() == this.getY()).findFirst();
+                if (torchToPickUp.isPresent()) {
+                    torches.remove(torchToPickUp.get());
+                    this.getInventory().addItem(ItemType.TORCH);
                 }
                 break;
             case "U":

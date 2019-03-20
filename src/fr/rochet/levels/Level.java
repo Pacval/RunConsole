@@ -19,7 +19,7 @@ public class Level {
 
     public Level() {
         this.selectLevel();
-        this.visionDistance = 3; // TODO : à voir comment géré plus tard. Dans fichier niveau ?
+        this.visionDistance = 4; // TODO : à voir comment géré plus tard. Dans fichier niveau ?
         this.map = null;
     }
 
