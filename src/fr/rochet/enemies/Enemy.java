@@ -1,30 +1,36 @@
-package fr.rochet.objects;
+package fr.rochet.enemies;
 
+import fr.rochet.objects.ElementType;
+import fr.rochet.objects.GameElement;
+import fr.rochet.objects.Obstacle;
+import fr.rochet.objects.Player;
 import fr.rochet.playgroundobjects.Frame;
 import fr.rochet.playgroundobjects.FrameForAstarAlgorithm;
 import fr.rochet.utils.RunGameException;
 
 import java.util.*;
 
-public class Enemy extends GameElement {
+public abstract class Enemy extends GameElement implements EnemyInterface {
 
+    private EnemyType enemyType;
     private int visionRange;
 
     private Frame destination;
 
-    public Enemy(int x, int y) {
+
+    Enemy(int x, int y, EnemyType enemyType, int visionRange) {
         super(x, y, ElementType.ENEMY);
-        destination = null;
-        visionRange = 5; // TODO : paramètrer cette variable pour qu'elle change en fonction du niveau ou du type d'ennemi
+        this.enemyType = enemyType;
+        this.visionRange = visionRange;
+
+        this.destination = null;
+
     }
 
-    /** Fonction globale de déplacement
-     *
-     * TODO : gérer l'intelligence de l'IA via variable de classe
+    /**
+     * Fonction abstraite pour forcer les classes qui 'extends' Enenmy à implémenter leur fonction 'move'
      */
-    public void move(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
-        this.moveWithAstarAlgoAndRestrictedCircleVision(players, obstacles, enemies);
-    }
+    public abstract void move(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException;
 
     //<editor-fold desc="Fonctions des différents niveaux d'intelligence de l'AI">
 
@@ -36,7 +42,7 @@ public class Enemy extends GameElement {
      * @param obstacles liste des obstacles
      * @param enemies   liste des ennemis
      */
-    private void moveWithAstarAlgoAndAllVision(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
+    protected void moveWithAstarAlgoAndAllVision(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
         Player closestPlayer = players.stream().min(Comparator.comparing(x -> Math.abs(x.getX() - this.getX()) + Math.abs(x.getY() - this.getY()))).orElse(null);
 
         if (closestPlayer != null) {
@@ -59,7 +65,7 @@ public class Enemy extends GameElement {
      * @param obstacles liste des obstacles
      * @param enemies   liste des ennemis
      */
-    private void moveWithAstarAlgoAndRestrictedCircleVision(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
+    void moveWithAstarAlgoAndRestrictedCircleVision(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
         Player closestPlayer = players.stream()
                 .filter(player -> Math.pow(Math.abs(player.getX() - this.getX()), 2) + Math.pow(Math.abs(player.getY() - this.getY()), 2) < Math.pow(visionRange, 2))
                 .min(Comparator.comparing(x -> Math.abs(x.getX() - this.getX()) + Math.abs(x.getY() - this.getY()))).orElse(null);
@@ -191,4 +197,11 @@ public class Enemy extends GameElement {
 
     //</editor-fold>
 
+    //<editor-fold desc="Getters / Setters">
+
+    public EnemyType getEnemyType() {
+        return enemyType;
+    }
+
+    //</editor-fold>
 }

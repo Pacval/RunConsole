@@ -1,9 +1,10 @@
 package fr.rochet.playgroundobjects;
 
+import fr.rochet.enemies.Werewolf;
 import fr.rochet.items.ItemType;
 import fr.rochet.items.Torch;
 import fr.rochet.levels.Level;
-import fr.rochet.objects.Enemy;
+import fr.rochet.enemies.Enemy;
 import fr.rochet.objects.Exit;
 import fr.rochet.objects.Obstacle;
 import fr.rochet.objects.Player;
@@ -53,7 +54,7 @@ public class Playground {
                         players.add(player);
                         break;
                     case "E":
-                        enemies.add(new Enemy(x, y));
+                        enemies.add(new Werewolf(x, y));
                         break;
                     case "X":
                         exits.add(new Exit(x, y));
