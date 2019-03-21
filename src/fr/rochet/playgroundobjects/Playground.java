@@ -1,6 +1,7 @@
 package fr.rochet.playgroundobjects;
 
 import fr.rochet.enemies.Werewolf;
+import fr.rochet.items.Item;
 import fr.rochet.items.ItemType;
 import fr.rochet.items.Torch;
 import fr.rochet.levels.Level;
@@ -23,6 +24,7 @@ public class Playground {
     private List<Obstacle> obstacles;
     private List<Exit> exits;
     private List<Torch> torches;
+    private List<Item> items;
 
     //<editor-fold desc="Fonctions d'initialisation">
 
@@ -32,6 +34,7 @@ public class Playground {
         this.obstacles = new ArrayList<>();
         this.exits = new ArrayList<>();
         this.torches = new ArrayList<>();
+        this.items = new ArrayList<>();
     }
 
     /**
@@ -53,7 +56,7 @@ public class Playground {
                         player.getInventory().addItem(ItemType.TORCH);
                         players.add(player);
                         break;
-                    case "E":
+                    case "E": // TODO : différencier les types d'ennemis sur la carte
                         enemies.add(new Werewolf(x, y));
                         break;
                     case "X":
@@ -114,6 +117,7 @@ public class Playground {
 
         return 0;
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Fonctions d'affichage">
@@ -170,5 +174,6 @@ public class Playground {
             }
         }
     }
+
     //</editor-fold>
 }

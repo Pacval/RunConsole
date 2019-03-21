@@ -23,7 +23,7 @@ public class Level {
         this.map = null;
     }
 
-    private void selectLevel() { // TODO : choix dans liste, pas choix à écrire
+    private void selectLevel() {
         // choix dificulté
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String difficulty = "";
