@@ -1,11 +1,9 @@
 package fr.rochet.playgroundobjects;
 
-import fr.rochet.enemies.Werewolf;
+import fr.rochet.enemies.Enemy;
 import fr.rochet.items.Item;
-import fr.rochet.items.ItemType;
 import fr.rochet.items.Torch;
 import fr.rochet.levels.Level;
-import fr.rochet.enemies.Enemy;
 import fr.rochet.objects.Exit;
 import fr.rochet.objects.Obstacle;
 import fr.rochet.objects.Player;
@@ -29,6 +27,10 @@ public class Playground {
     //<editor-fold desc="Fonctions d'initialisation">
 
     public Playground() {
+        this.resetPlayground();
+    }
+
+    private void resetPlayground() {
         this.players = new ArrayList<>();
         this.enemies = new ArrayList<>();
         this.obstacles = new ArrayList<>();
@@ -40,34 +42,16 @@ public class Playground {
     /**
      * On initialise le niveau avec l'objet level passé
      */
-    public void initialize(Level level) throws RunGameException {
+    public void initialize(Level level) {
+        this.width = level.getWidth();
+        this.height = level.getHeight();
 
-        this.height = level.getMap().length;
-        this.width = level.getMap()[0].length;
-
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                switch (level.getMap()[y][x]) {
-                    case "#":
-                        obstacles.add(new Obstacle(x, y));
-                        break;
-                    case "P":
-                        Player player = new Player(x, y, level.getVisionDistance());
-                        player.getInventory().addItem(ItemType.TORCH);
-                        players.add(player);
-                        break;
-                    case "E": // TODO : différencier les types d'ennemis sur la carte
-                        enemies.add(new Werewolf(x, y));
-                        break;
-                    case "X":
-                        exits.add(new Exit(x, y));
-                        break;
-                    case "T":
-                        torches.add(new Torch(x, y));
-                        break;
-                }
-            }
-        }
+        this.players = level.getPlayers();
+        this.enemies = level.getEnemies();
+        this.obstacles = level.getObstacles();
+        this.exits = level.getExits();
+        this.torches = level.getTorches();
+        this.items = level.getItems();
     }
 
     //</editor-fold>
@@ -135,7 +119,8 @@ public class Playground {
 
                 // On vérifie si 1 joueur / torche à la vision sur le point
                 // Si un joueur possède une torche, on prend la distance d'éclairage de la torche autour de lui, car celle ci est plus grande que sa vision
-                if (players.stream().anyMatch(player -> Math.pow(Math.abs(player.getX() - finalX), 2) + Math.pow(Math.abs(player.getY() - finalY), 2) < Math.pow(player.carryTorch() ? Torch.LIGHT_RANGE : player.getVisionRange(), 2))
+                if (players.stream().anyMatch(player -> Math.pow(Math.abs(player.getX() - finalX), 2) + Math.pow(Math.abs(player.getY() - finalY), 2)
+                        < Math.pow(player.carryTorch() && Torch.LIGHT_RANGE > player.getVisionRange() ? Torch.LIGHT_RANGE : player.getVisionRange(), 2))
                         || torches.stream().anyMatch(torch -> Math.pow(Math.abs(torch.getX() - finalX), 2) + Math.pow(Math.abs(torch.getY() - finalY), 2) < Math.pow(Torch.LIGHT_RANGE, 2))) {
                     if (enemies.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
                         System.out.print('E');

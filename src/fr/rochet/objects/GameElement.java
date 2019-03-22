@@ -4,30 +4,23 @@ import fr.rochet.playgroundobjects.Frame;
 
 public abstract class GameElement extends Frame {
 
-    private ElementType elementType;
-
-    public GameElement(int x, int y, ElementType elementType) {
+    public GameElement(int x, int y) {
         super(x, y);
-        this.elementType = elementType;
     }
 
-    public void moveUp() {
+    protected void moveUp() {
         this.setY(this.getY() - 1);
     }
 
-    public void moveDown() {
+    protected void moveDown() {
         this.setY(this.getY() + 1);
     }
 
-    public void moveRight() {
+    protected void moveRight() {
         this.setX(this.getX() + 1);
     }
 
-    public void moveLeft() {
+    protected void moveLeft() {
         this.setX(this.getX() - 1);
-    }
-
-    public ElementType getElementType() {
-        return elementType;
     }
 }

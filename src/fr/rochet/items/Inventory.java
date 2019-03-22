@@ -23,6 +23,10 @@ public class Inventory {
         items.put(type, items.get(type) + 1);
     }
 
+    public void addItem(ItemType type, int number) {
+        items.put(type, items.get(type) + number);
+    }
+
     public boolean useItem(ItemType type) {
         if (items.get(type) > 0) {
             items.put(type, items.get(type) - 1);

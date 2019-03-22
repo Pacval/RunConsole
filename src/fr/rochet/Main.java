@@ -7,13 +7,14 @@ import fr.rochet.utils.RunGameException;
 public class Main {
 
     public static void main(String[] args) {
+
         // Chargement du jeu
         Playground playground = new Playground();
 
-        // Sélection niveau
-        Level level = new Level();
-
         try {
+
+            // Sélection niveau
+            Level level = new Level();
 
             // Lancement du jeu
             playground.initialize(level);

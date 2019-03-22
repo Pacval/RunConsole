@@ -18,7 +18,7 @@ public class Player extends GameElement {
     private int visionRange;
 
     public Player(int x, int y, int visionRange) {
-        super(x, y, ElementType.PLAYER);
+        super(x, y);
         this.isOut = false;
         this.inventory = new Inventory();
         this.visionRange = visionRange;
@@ -34,7 +34,7 @@ public class Player extends GameElement {
         if (this.carryTorch() && torches.stream().noneMatch(pos -> pos.getX() == this.getX() && pos.getY() == this.getY())) {
             possibleMoves.add("T"); // TORCH
         }
-        if (torches.stream().anyMatch(pos -> pos.getX() == this.getX() && pos.getY() == this.getY())){
+        if (torches.stream().anyMatch(pos -> pos.getX() == this.getX() && pos.getY() == this.getY())) {
             possibleMoves.add("P"); // PICK UP // TODO : besoin d'un bouton que pour ramasser torches. Autres items se ramasseront en marchant dessus
         }
         if (obstacles.stream().noneMatch(pos -> pos.getX() == this.getX() && pos.getY() == this.getY() - 1)) {

@@ -1,6 +1,5 @@
 package fr.rochet.enemies;
 
-import fr.rochet.objects.ElementType;
 import fr.rochet.objects.GameElement;
 import fr.rochet.objects.Obstacle;
 import fr.rochet.objects.Player;
@@ -19,7 +18,7 @@ public abstract class Enemy extends GameElement implements EnemyInterface {
 
 
     Enemy(int x, int y, EnemyType enemyType, int visionRange) {
-        super(x, y, ElementType.ENEMY);
+        super(x, y);
         this.enemyType = enemyType;
         this.visionRange = visionRange;
 
