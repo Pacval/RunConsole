@@ -6,6 +6,11 @@ import fr.rochet.utils.RunGameException;
 
 import java.util.List;
 
+/**
+ * Ennemi classique
+ *
+ * TODO : idée : les loups garous communiquent entre eux et si 1 loup garou trouve un joueur ils vont tous vers lui
+ */
 public class Werewolf extends Enemy {
 
     private static final int VISION_RANGE = 5;

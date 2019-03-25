@@ -2,6 +2,7 @@ package fr.rochet.levels;
 
 import fr.rochet.enemies.Enemy;
 import fr.rochet.enemies.Werewolf;
+import fr.rochet.enemies.Zombie;
 import fr.rochet.items.Item;
 import fr.rochet.items.ItemType;
 import fr.rochet.items.Torch;
@@ -151,6 +152,9 @@ public class Level {
             switch (jsonEnemy.getString("enemyType")) {
                 case "WEREWOLF":
                     this.enemies.add(new Werewolf(jsonEnemy.getInt("x"), jsonEnemy.getInt("y")));
+                    break;
+                case "ZOMBIE":
+                    this.enemies.add(new Zombie(jsonEnemy.getInt("x"), jsonEnemy.getInt("y")));
                     break;
             }
         }
