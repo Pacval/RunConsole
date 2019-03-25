@@ -1,0 +1,177 @@
+<!doctype html>
+
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>JSON parse test</title>
+
+  <style>
+    .column {
+      float: left;
+      width: 33.33%;
+      text-align: center;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <h3>Level Design Helper</h3>
+
+  <div>
+    Aide à la création d'un niveau : entrez votre JSON dans le champ texte, cliquez sur le bouton et le niveau
+    apparaitra en dessous.
+    Vous pouvez ensuite modifier le JSON à votre guise.
+  </div>
+
+  <div>
+    <div class="column" style="background-color:000;">
+      <textarea id="jsonField" cols="40" rows="20"></textarea>
+    </div>
+
+    <div class="column" style="background-color:000;">
+      <button id="btParse" onclick="parse()">Parser</button>
+      <button id="btInit" onclick="init()">Initialiser</button>
+    </div>
+
+    <div class="column" style="background-color:000;">
+      <span id="res" style="font-family: monospace"></span>
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+    function init() {
+
+      var txt = "";
+      txt += '{';
+      txt += '  "difficulty": "",';
+      txt += '  "number": ,';
+      txt += '  "width": ,';
+      txt += '  "height": ,';
+      txt += '  "players": [';
+      txt += '    {';
+      txt += '      "x": ,';
+      txt += '      "y": ,';
+      txt += '      "visionRange": ,';
+      txt += '      "inventory": {';
+      txt += '        "items": [';
+      txt += '        ]';
+      txt += '      }';
+      txt += '    }';
+      txt += '  ],';
+      txt += '  "enemies": [';
+      txt += '    {';
+      txt += '      "enemyType": "",';
+      txt += '      "x": ,';
+      txt += '      "y": ';
+      txt += '    }';
+      txt += '  ],';
+      txt += '  "exits": [';
+      txt += '    {';
+      txt += '      "x": ,';
+      txt += '      "y": ';
+      txt += '    }';
+      txt += '  ],';
+      txt += '  "obstacles": [';
+      txt += '  ],';
+      txt += '  "torches": [';
+      txt += '  ],';
+      txt += '  "items": [';
+      txt += '  ]';
+      txt += '}';
+
+      document.getElementById("jsonField").innerHTML = txt;
+    }
+
+    function parse() {
+
+      var txt = document.getElementById("jsonField").value;
+      var root = JSON.parse(txt);
+
+      /* parsage */
+
+      var width = root.width;
+      var height = root.height;
+
+      var players = [];
+      for (i in root.players) {
+        players.push(root.players[i].x + '.' + root.players[i].y);
+      }
+
+      var enemies = [];
+      for (i in root.enemies) {
+        enemies.push(root.enemies[i].x + '.' + root.enemies[i].y);
+      }
+
+      var exits = [];
+      for (i in root.exits) {
+        exits.push(root.exits[i].x + '.' + root.exits[i].y);
+      }
+
+      var obstacles = [];
+      for (i in root.obstacles) {
+        obstacles.push(root.obstacles[i].x + '.' + root.obstacles[i].y);
+      }
+
+      var torches = [];
+      for (i in root.torches) {
+        torches.push(root.torches[i].x + '.' + root.torches[i].y);
+      }
+
+      var items = [];
+      for (i in root.items) {
+        items.push(root.items[i].x + '.' + root.items[i].y);
+      }
+
+
+      /* ajout bordures */
+      for (i = 0; i < width; i++) {
+        obstacles.push(i + '.' + 0);
+        obstacles.push(i + '.' + (height - 1));
+      }
+      for (i = 1; i < height - 1; i++) {
+        obstacles.push(0 + '.' + i);
+        obstacles.push((width - 1) + '.' + i);
+      }
+
+      /* Affichage */
+
+      var res = "";
+
+      for (j = 0; j < height; j++) {
+        for (i = 0; i < width; i++) {
+          if (enemies.includes(i + '.' + j)) {
+            res += 'E';
+          } else if (players.includes(i + '.' + j)) {
+            res += 'P';
+          } else if (exits.includes(i + '.' + j)) {
+            res += 'X';
+          } else if (torches.includes(i + '.' + j)) {
+            res += 'T';
+          } else if (obstacles.includes(i + '.' + j)) {
+            res += '#';
+          } else {
+            res += '&nbsp;';
+          }
+        }
+        res += '<br/>';
+      }
+      // var n = fruits.includes("Mango");
+
+      document.getElementById("res").innerHTML = res;
+    }
+  </script>
+</body>
+
+</html>
