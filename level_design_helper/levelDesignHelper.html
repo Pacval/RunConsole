@@ -5,20 +5,46 @@
 <head>
   <meta charset="utf-8">
 
-  <title>JSON parse test</title>
+  <title>Run : Aide Level Design</title>
 
   <style>
-    .column {
-      float: left;
-      width: 33.33%;
+    .container {
+      display: flex;
+      flex-direction: row;
+      margin: 20px;
       text-align: center;
+      background-color:#777;
     }
 
-    /* Clear floats after the columns */
-    .row:after {
-      content: "";
-      display: table;
-      clear: both;
+    .col-input {
+      flex: 2;
+    }
+
+    .col-buttons {
+      flex: 1;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .button {
+      background-color: rgb(24, 91, 236);
+      border: none;
+      color: white;
+      padding: 15px 40px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px;
+      margin: 20px;
+    }
+
+    .col-res {
+      flex: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   </style>
 
@@ -34,70 +60,49 @@
     Vous pouvez ensuite modifier le JSON à votre guise.
   </div>
 
-  <div>
-    <div class="column" style="background-color:000;">
-      <textarea id="jsonField" cols="40" rows="20"></textarea>
+  <div class="container" name="mainForm">
+    <div class="col-input">
+      <textarea id="jsonField" cols="60" rows="50"></textarea>
     </div>
 
-    <div class="column" style="background-color:000;">
-      <button id="btParse" onclick="parse()">Parser</button>
-      <button id="btInit" onclick="init()">Initialiser</button>
+    <div class="col-buttons">
+      <button id="btParse" class="button" onclick="parse()">Parser</button>
+      <button id="btInitMin" class="button" onclick="initMin()">Initialiser minimum</button>
+      <button id="btInitWithValues" class="button" onclick="initWithValues()">Initialiser avec valeurs</button>
     </div>
 
-    <div class="column" style="background-color:000;">
-      <span id="res" style="font-family: monospace"></span>
+    <div class="col-res">
+      <div style="background-color:#999;">
+        <span id="res" style="font-family: monospace"></span>
+      </div>
     </div>
-
   </div>
 
   <script type="text/javascript">
-    function init() {
 
-      var txt = "";
-      txt += '{';
-      txt += '  "difficulty": "",';
-      txt += '  "number": ,';
-      txt += '  "width": ,';
-      txt += '  "height": ,';
-      txt += '  "players": [';
-      txt += '    {';
-      txt += '      "x": ,';
-      txt += '      "y": ,';
-      txt += '      "visionRange": ,';
-      txt += '      "inventory": {';
-      txt += '        "items": [';
-      txt += '        ]';
-      txt += '      }';
-      txt += '    }';
-      txt += '  ],';
-      txt += '  "enemies": [';
-      txt += '    {';
-      txt += '      "enemyType": "",';
-      txt += '      "x": ,';
-      txt += '      "y": ';
-      txt += '    }';
-      txt += '  ],';
-      txt += '  "exits": [';
-      txt += '    {';
-      txt += '      "x": ,';
-      txt += '      "y": ';
-      txt += '    }';
-      txt += '  ],';
-      txt += '  "obstacles": [';
-      txt += '  ],';
-      txt += '  "torches": [';
-      txt += '  ],';
-      txt += '  "items": [';
-      txt += '  ]';
-      txt += '}';
-
-      document.getElementById("jsonField").innerHTML = txt;
+    /* Initialisation minimale sans valeur */
+    function initMin() {
+      var txt = '{\n  "difficulty": "",\n  "number": ,\n  "width": ,\n  "height": ,\n  "players": [\n    {\n      "x": ,\n      "y": \n    }\n  ],\n  "enemies": [\n  ],\n  "exits": [\n  {\n  "x": ,\n  "y": \n  }\n  ],\n  "obstacles": [\n  ],\n  "torches": [\n  ],\n  "items": [\n  ]\n}';
+      document.getElementById("jsonField").value = txt;
     }
 
+    /* Initialisation avec valeurs */
+    function initWithValues() {
+      var txt = '{\n  "difficulty": "EASY",\n  "number": 1,\n  "width": 12,\n  "height": 12,\n  "players": [\n    {\n      "x": 2,\n      "y": 2,\n      "visionRange": 30,\n      "inventory": {\n        "items": [\n          {\n            "type": "TORCH",\n            "number": 1\n          }\n        ]\n      }\n    }\n  ],\n  "enemies": [\n    {\n      "enemyType": "WEREWOLF",\n      "x": 3,\n      "y": 10\n    }\n  ],\n  "exits": [\n    {\n      "x": 11,\n      "y": 7\n    }\n  ],\n  "obstacles": [\n    {\n      "x": 5,\n      "y": 5\n    }\n  ],\n  "torches": [\n  ],\n  "items": [\n  ]\n}';
+      document.getElementById("jsonField").value = txt;
+    }
+
+    /* fonction de parsage et d'affichage du résultat */
     function parse() {
 
       var txt = document.getElementById("jsonField").value;
-      var root = JSON.parse(txt);
+      var root;
+
+      try {
+        root = JSON.parse(txt);
+      } catch (e) {
+        alert(e); // error in the above string (in this case, yes)!
+      }
 
       /* parsage */
 
