@@ -130,6 +130,8 @@ public class Playground {
                         System.out.print('X');
                     } else if (torches.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
                         System.out.print('T');
+                    } else if (items.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
+                        System.out.print('i');
                     } else if (obstacles.stream().anyMatch(x -> x.getX() == finalX && x.getY() == finalY)) {
                         System.out.print('#');
                     } else {
@@ -153,7 +155,7 @@ public class Playground {
             } else {
                 Runtime.getRuntime().exec("clear");
             }
-        } catch (Exception excpt) {
+        } catch (Exception e) {
             for (int i = 0; i < 20; i++) {
                 System.out.println();
             }

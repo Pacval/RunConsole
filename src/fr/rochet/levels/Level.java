@@ -183,6 +183,14 @@ public class Level {
             JSONObject jsonTorch = (JSONObject) jsonTorches.get(i);
             this.torches.add(new Torch(jsonTorch.getInt("x"), jsonTorch.getInt("y")));
         }
+
+        /* ITEMS */
+        this.items = new ArrayList<>();
+        /*JSONArray jsonItems = root.getJSONArray("items");
+        for (int i = 0; i < jsonItems.length(); i++) {
+            JSONObject jsonItem = (JSONObject) jsonItems.get(i);
+            this.items.add(new Item(jsonItem.getInt("x"), jsonItem.getInt("y")));
+        }*/
     }
 
     /**

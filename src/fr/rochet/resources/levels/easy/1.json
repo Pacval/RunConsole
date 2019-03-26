@@ -23,11 +23,6 @@
       "enemyType": "WEREWOLF",
       "x": 3,
       "y": 10
-    },
-    {
-      "enemyType": "ZOMBIE",
-      "x": 10,
-      "y": 1
     }
   ],
   "exits": [
@@ -109,5 +104,9 @@
     }
   ],
   "items": [
+    {
+      "x": 10,
+      "y": 1
+    }
   ]
 }
