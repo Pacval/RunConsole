@@ -13,7 +13,7 @@
       flex-direction: row;
       margin: 20px;
       text-align: center;
-      background-color:#777;
+      background-color: #777;
     }
 
     .col-input {
@@ -69,6 +69,7 @@
       <button id="btParse" class="button" onclick="parse()">Parser</button>
       <button id="btInitMin" class="button" onclick="initMin()">Initialiser minimum</button>
       <button id="btInitWithValues" class="button" onclick="initWithValues()">Initialiser avec valeurs</button>
+      <button id="btPrettyPrint" class="button" onclick="prettyPrint()">Reformater JSON</button>
     </div>
 
     <div class="col-res">
@@ -90,6 +91,14 @@
     function initWithValues() {
       var txt = '{\n  "difficulty": "EASY",\n  "number": 1,\n  "width": 12,\n  "height": 12,\n  "players": [\n    {\n      "x": 2,\n      "y": 2,\n      "visionRange": 30,\n      "inventory": {\n        "items": [\n          {\n            "type": "TORCH",\n            "number": 1\n          }\n        ]\n      }\n    }\n  ],\n  "enemies": [\n    {\n      "enemyType": "WEREWOLF",\n      "x": 3,\n      "y": 10\n    }\n  ],\n  "exits": [\n    {\n      "x": 11,\n      "y": 7\n    }\n  ],\n  "obstacles": [\n    {\n      "x": 5,\n      "y": 5\n    }\n  ],\n  "torches": [\n  ],\n  "items": [\n  ]\n}';
       document.getElementById("jsonField").value = txt;
+    }
+
+    /* Reformatage du JSON */
+    function prettyPrint() {
+      var ugly = document.getElementById('jsonField').value;
+      var obj = JSON.parse(ugly);
+      var pretty = JSON.stringify(obj, undefined, 2);
+      document.getElementById('jsonField').value = pretty;
     }
 
     /* fonction de parsage et d'affichage du résultat */
@@ -164,6 +173,8 @@
             res += 'X';
           } else if (torches.includes(i + '.' + j)) {
             res += 'T';
+          } else if (items.includes(i + '.' + j)) {
+            res += 'i';
           } else if (obstacles.includes(i + '.' + j)) {
             res += '#';
           } else {
