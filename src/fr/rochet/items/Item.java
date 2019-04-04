@@ -8,5 +8,10 @@ public class Item extends GameElement {
 
     public Item(int x, int y, ItemType itemType) {
         super(x, y);
+        this.itemType = itemType;
+    }
+
+    public ItemType getItemType() {
+        return itemType;
     }
 }

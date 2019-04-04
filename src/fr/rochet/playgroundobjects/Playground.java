@@ -66,8 +66,9 @@ public class Playground {
         while ((gameResult = isGameOver()) == 0) {
             players.forEach(player -> {
                 printConsole();
-                player.getInventory().printConsole();
+                player.printInventory();
                 player.move(obstacles, exits, torches);
+                player.pickUpItem(items);
             });
             for (Enemy enemy : enemies) {
                 printConsole();

@@ -138,7 +138,7 @@ public class Level {
 
             JSONArray jsonItems = ((JSONObject) jsonPlayer.get("inventory")).getJSONArray("items");
             for (int j = 0; j < jsonItems.length(); j++) {
-                player.getInventory().addItem(ItemType.valueOf(((JSONObject) jsonItems.get(i)).getString("type")), ((JSONObject) jsonItems.get(i)).getInt("number"));
+                player.addItem(ItemType.valueOf(((JSONObject) jsonItems.get(i)).getString("type")), ((JSONObject) jsonItems.get(i)).getInt("number"));
             }
 
             this.players.add(player);
@@ -172,7 +172,7 @@ public class Level {
         JSONArray jsonObstacles = root.getJSONArray("obstacles");
         for (int i = 0; i < jsonObstacles.length(); i++) {
             JSONObject jsonObstacle = (JSONObject) jsonObstacles.get(i);
-            this.obstacles.add(new Obstacle(jsonObstacle.getInt("x"), jsonObstacle.getInt("y")));
+            this.obstacles.add(new Obstacle(jsonObstacle.getInt("x"), jsonObstacle.getInt("y"), false));
         }
         this.fillBorders();
 
@@ -186,11 +186,11 @@ public class Level {
 
         /* ITEMS */
         this.items = new ArrayList<>();
-        /*JSONArray jsonItems = root.getJSONArray("items");
+        JSONArray jsonItems = root.getJSONArray("items");
         for (int i = 0; i < jsonItems.length(); i++) {
             JSONObject jsonItem = (JSONObject) jsonItems.get(i);
-            this.items.add(new Item(jsonItem.getInt("x"), jsonItem.getInt("y")));
-        }*/
+            this.items.add(new Item(jsonItem.getInt("x"), jsonItem.getInt("y"), ItemType.AXE));
+        }
     }
 
     /**
@@ -198,23 +198,23 @@ public class Level {
      */
     private void fillBorders() {
         for (int i = 0; i < this.width; i++) {
-            Obstacle obstacleUp = new Obstacle(i, 0);
+            Obstacle obstacleUp = new Obstacle(i, 0, true);
             if (exits.stream().noneMatch(exit -> exit.isAtSamePosition(obstacleUp))) {
                 obstacles.add(obstacleUp);
             }
 
-            Obstacle obstacleDown = new Obstacle(i, this.height - 1);
+            Obstacle obstacleDown = new Obstacle(i, this.height - 1, true);
             if (exits.stream().noneMatch(exit -> exit.isAtSamePosition(obstacleDown))) {
                 obstacles.add(obstacleDown);
             }
         }
         for (int i = 1; i < this.height - 1; i++) {
-            Obstacle obstacleLeft = new Obstacle(0, i);
+            Obstacle obstacleLeft = new Obstacle(0, i, true);
             if (exits.stream().noneMatch(exit -> exit.isAtSamePosition(obstacleLeft))) {
                 obstacles.add(obstacleLeft);
             }
 
-            Obstacle obstacleRight = new Obstacle(this.width - 1, i);
+            Obstacle obstacleRight = new Obstacle(this.width - 1, i, true);
             if (exits.stream().noneMatch(exit -> exit.isAtSamePosition(obstacleRight))) {
                 obstacles.add(obstacleRight);
             }
