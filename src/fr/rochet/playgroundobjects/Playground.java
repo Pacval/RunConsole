@@ -109,7 +109,7 @@ public class Playground {
 
     /**
      * Permet d'afficher provisoirement le terrain de jeu dans la console
-     * Peut etre amélioré (bordures (obstacles -> évite de sortir du terrain))
+     * Peut être amélioré (bordures (obstacles -> évite de sortir du terrain))
      */
     private void printConsole() {
         clearConsole();

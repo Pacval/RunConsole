@@ -8,8 +8,8 @@ import java.util.List;
 
 /**
  * Ennemi classique
- *
- * TODO : idée : les loups garous communiquent entre eux et si 1 loup garou trouve un joueur ils vont tous vers lui
+ * <p>
+ * TODO : idée : les loups garous communiquent entre eux et si 1 loup garou trouve un joueur ils vont tous vers lui (appelle les autres pdt 1 ou 2 tours, puis rebouge ? -> permet de se cacher / de s'éloigner)
  */
 public class Werewolf extends Enemy {
 
@@ -23,7 +23,7 @@ public class Werewolf extends Enemy {
      * Déplacement
      */
     public void move(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
-        this.moveWithAstarAlgoAndRestrictedCircleVision(players, obstacles, enemies);
+        this.moveWithAStarAlgoAndRestrictedCircleVision(players, obstacles, enemies);
     }
 
 }

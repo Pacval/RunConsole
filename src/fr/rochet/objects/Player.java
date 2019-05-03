@@ -38,7 +38,7 @@ public class Player extends GameElement {
         if (this.carryTorch() && torches.stream().noneMatch(pos -> pos.getX() == this.getX() && pos.getY() == this.getY())) {
             possibleMoves.add("T"); // TORCH
         }
-        if (this.carryAxe() && !this.getDestructibleObstaclesNearPlayer(obstacles).isEmpty()) {
+        if (this.carryItem(ItemType.AXE) && !this.getDestructibleObstaclesNearPlayer(obstacles).isEmpty()) {
             possibleMoves.add("A"); // AXE
         }
         if (torches.stream().anyMatch(pos -> pos.getX() == this.getX() && pos.getY() == this.getY())) {
@@ -149,14 +149,17 @@ public class Player extends GameElement {
     }
 
     /**
-     * @return true si le joueur porte une hache, false sinon
+     * Vérifie si le joueur possède un item du type demandé
+     *
+     * @param itemType type de l'item
+     * @return true si le joueur possède l'item, false sinon
      */
-    private boolean carryAxe() {
-        return inventory.getItems().get(ItemType.AXE) > 0;
+    private boolean carryItem(ItemType itemType) {
+        return inventory.getItems().get(itemType) > 0;
     }
 
-    public boolean useItem(ItemType itemType) {
-        return this.inventory.useItem(itemType);
+    private void useItem(ItemType itemType) {
+        this.inventory.useItem(itemType);
     }
 
     public void printInventory() {

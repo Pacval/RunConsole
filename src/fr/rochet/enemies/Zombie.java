@@ -2,33 +2,25 @@ package fr.rochet.enemies;
 
 import fr.rochet.objects.Obstacle;
 import fr.rochet.objects.Player;
-import fr.rochet.utils.RunGameException;
 
 import java.util.List;
 
 /**
- * Ennemi classique mais lent
+ * Ennemi stupide : ne bouge pas si pas de vision sur joueur.
+ * Si vision sur joueur, se déplace directement vers lui.
+ * <p>
+ * TODO : si 2 zombies sur meme case, un tue l'autre
  */
 public class Zombie extends Enemy {
 
     private static final int VISION_RANGE = 5;
 
-    private static final int TURN_TO_MOVE = 2;
-
-    private int turn;
-
     public Zombie(int x, int y) {
         super(x, y, EnemyType.ZOMBIE, VISION_RANGE);
-        turn = 1;
     }
 
     @Override
-    public void move(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
-        if (turn == TURN_TO_MOVE) {
-            this.moveWithAstarAlgoAndRestrictedCircleVision(players, obstacles, enemies);
-            turn = 1;
-        } else {
-            turn++;
-        }
+    public void move(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) {
+        this.moveStraightToClosestPlayerAndRestrictedCircleVision(players, obstacles, enemies);
     }
 }

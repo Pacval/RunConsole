@@ -5,6 +5,7 @@ import fr.rochet.objects.Obstacle;
 import fr.rochet.objects.Player;
 import fr.rochet.playgroundobjects.Frame;
 import fr.rochet.playgroundobjects.FrameForAstarAlgorithm;
+import fr.rochet.utils.Direction;
 import fr.rochet.utils.RunGameException;
 
 import java.util.*;
@@ -34,14 +35,14 @@ public abstract class Enemy extends GameElement implements EnemyInterface {
     //<editor-fold desc="Fonctions des différents niveaux d'intelligence de l'AI">
 
     /**
-     * L'ennemi a vision sur tout le terrain, comme le joueur.
-     * Il va donc utiliser l'algorithme A* pour aller le plus vite vers le joueur
+     * Déplacement avec algo A*
+     * Vision sur tout le terrain
      *
      * @param players   liste des joueurs
      * @param obstacles liste des obstacles
      * @param enemies   liste des ennemis
      */
-    protected void moveWithAstarAlgoAndAllVision(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
+    void moveWithAstarAlgoAndAllVision(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
         Player closestPlayer = players.stream().min(Comparator.comparing(x -> Math.abs(x.getX() - this.getX()) + Math.abs(x.getY() - this.getY()))).orElse(null);
 
         if (closestPlayer != null) {
@@ -50,12 +51,14 @@ public abstract class Enemy extends GameElement implements EnemyInterface {
                 return;
             }
 
-            this.useAstarAlgo(closestPlayer, obstacles, enemies);
+            this.useAStarAlgo(closestPlayer, obstacles, enemies);
         }
     }
 
     /**
-     * Méthode de déplacement. L'ennemi a une vision sphérique qui ignore les obstacles. Il utilise l'algo A*
+     * Déplacement avec algo A*
+     * Vision sphérique qui ignore les obstacles
+     * <p>
      * Si l'ennemi a vision sur un joueur, il va vers lui.
      * Sinon, il va vers le dernier point auquel il a vu un joueur.
      * Si aucun des 2 cas n'est rempli, il choisit un point libre aléatoire du terrain et va vers celui ci
@@ -64,14 +67,14 @@ public abstract class Enemy extends GameElement implements EnemyInterface {
      * @param obstacles liste des obstacles
      * @param enemies   liste des ennemis
      */
-    void moveWithAstarAlgoAndRestrictedCircleVision(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
+    void moveWithAStarAlgoAndRestrictedCircleVision(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
         Player closestPlayer = players.stream()
                 .filter(player -> Math.pow(Math.abs(player.getX() - this.getX()), 2) + Math.pow(Math.abs(player.getY() - this.getY()), 2) < Math.pow(visionRange, 2))
                 .min(Comparator.comparing(x -> Math.abs(x.getX() - this.getX()) + Math.abs(x.getY() - this.getY()))).orElse(null);
 
         if (closestPlayer != null) {
             // Si on a la vision sur un joueur, on va vers lui et on enregistre sa position
-            this.useAstarAlgo(closestPlayer, obstacles, enemies);
+            this.useAStarAlgo(closestPlayer, obstacles, enemies);
             destination = closestPlayer;
         } else {
             // Si on a pas la vision sur un joueur, on va vers la destination enregistrée
@@ -79,8 +82,41 @@ public abstract class Enemy extends GameElement implements EnemyInterface {
                 // Si on a pas de destination enregistrée, ou qu'on est actuellement sur cette position, on en choisit une au hasard
                 this.destination = this.selectRandomFreeFrame(obstacles);
             }
-            this.useAstarAlgo(destination, obstacles, enemies);
+            this.useAStarAlgo(destination, obstacles, enemies);
         }
+    }
+
+    /**
+     * Déplacement en ligne droite vers joueur
+     * N'évite pas les obstacles. Peut donc rester bloqué
+     * Vision sur tout le terrain
+     *
+     * @param players   liste des joueurs
+     * @param obstacles liste des obstacles
+     * @param enemies   liste des ennemis
+     */
+    void moveStraightToClosestPlayerAndAllVision(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) {
+        players.stream()
+                .min(Comparator.comparing(x -> Math.abs(x.getX() - this.getX()) + Math.abs(x.getY() - this.getY())))
+                .ifPresent(closestPlayer -> this.moveStraightToPlayer(closestPlayer, obstacles, enemies));
+
+    }
+
+    /**
+     * Déplacement en ligne droite vers joueur
+     * N'évite pas les obstacles. Peut donc rester bloqué
+     * Vision sphérique qui ignore les obstacles
+     *
+     * @param players   liste des joueurs
+     * @param obstacles liste des obstacles
+     * @param enemies   liste des ennemis
+     */
+    void moveStraightToClosestPlayerAndRestrictedCircleVision(List<Player> players, List<Obstacle> obstacles, List<Enemy> enemies) {
+        players.stream()
+                .filter(player -> Math.pow(Math.abs(player.getX() - this.getX()), 2) + Math.pow(Math.abs(player.getY() - this.getY()), 2) < Math.pow(visionRange, 2))
+                .min(Comparator.comparing(x -> Math.abs(x.getX() - this.getX()) + Math.abs(x.getY() - this.getY())))
+                .ifPresent(closestPlayer -> this.moveStraightToPlayer(closestPlayer, obstacles, enemies));
+
     }
 
     //</editor-fold>
@@ -90,7 +126,7 @@ public abstract class Enemy extends GameElement implements EnemyInterface {
     /**
      * Déplace l'ennemi de 1 case vers la destination grâce à l'algorithme A*
      */
-    private void useAstarAlgo(Frame destination, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
+    private void useAStarAlgo(Frame destination, List<Obstacle> obstacles, List<Enemy> enemies) throws RunGameException {
 
         // On vérifie qu'on est pas déjà à la destination
         if (Math.abs(destination.getX() - this.getX()) + Math.abs(destination.getY() - this.getY()) == 0) {
@@ -156,6 +192,63 @@ public abstract class Enemy extends GameElement implements EnemyInterface {
         return adj;
     }
 
+    //</editor-fold>
+
+    //<editor-fold desc="Fonctions de déplacement direct">
+
+    private void moveStraightToPlayer(Player closestPlayer, List<Obstacle> obstacles, List<Enemy> enemies) {
+        List<Direction> directions = new ArrayList<>();
+        if (closestPlayer.getY() < this.getY()) {
+            directions.add(Direction.UP);
+        }
+        if (closestPlayer.getY() > this.getY()) {
+            directions.add(Direction.DOWN);
+        }
+        if (closestPlayer.getX() < this.getX()) {
+            directions.add(Direction.LEFT);
+        }
+        if (closestPlayer.getX() > this.getX()) {
+            directions.add(Direction.RIGHT);
+        }
+
+        // On mélange la liste aléatoirement
+        Collections.shuffle(directions);
+
+        boolean moved = false;
+        for (Direction direction : directions) {
+            if (!moved) {
+                // On récupère la prochaine frame de l'ennemi selon ce déplacement
+                Frame nextFrame = null;
+                switch (direction) {
+                    case UP:
+                        nextFrame = new Frame(this.getX(), this.getY() - 1);
+                        break;
+                    case DOWN:
+                        nextFrame = new Frame(this.getX(), this.getY() + 1);
+                        break;
+                    case LEFT:
+                        nextFrame = new Frame(this.getX() - 1, this.getY());
+                        break;
+                    case RIGHT:
+                        nextFrame = new Frame(this.getX() + 1, this.getY());
+                        break;
+                }
+
+                // On vérifie que la prochaine frame n'est pas un obstacle ou un ennemi
+                Frame finalNextFrame = nextFrame;
+                if (obstacles.stream().noneMatch(item -> item.isAtSamePosition(finalNextFrame))
+                        && enemies.stream().noneMatch(item -> item.isAtSamePosition(finalNextFrame))) {
+                    this.moveToward(finalNextFrame);
+                    moved = true;
+                }
+            }
+        }
+    }
+
+    //</editor-fold>
+
+    //<editor-fold desc="Fonctions privées diverses">
+
     private void moveToward(Frame frame) {
         if (frame.getX() == this.getX()) {
             if (frame.getY() < this.getY()) {
@@ -171,10 +264,6 @@ public abstract class Enemy extends GameElement implements EnemyInterface {
             }
         }
     }
-
-    //</editor-fold>
-
-    //<editor-fold desc="Fonctions privées diverses">
 
     private Frame selectRandomFreeFrame(List<Obstacle> obstacles) throws RunGameException {
         Frame destination;

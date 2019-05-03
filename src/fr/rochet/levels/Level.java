@@ -30,7 +30,7 @@ public class Level {
     private int width;
     private int height;
 
-    // Objets pour le playgroung
+    // Objets pour le playground
     private List<Player> players;
     private List<Enemy> enemies;
     private List<Obstacle> obstacles;
@@ -50,7 +50,7 @@ public class Level {
      * @throws RunGameException erreur lors de la récupération du niveau
      */
     private void selectLevel() throws RunGameException {
-        // choix dificulté
+        // choix difficulté
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String difficulty = "";
         while (!(difficulty.equals("E") || difficulty.equals("M") || difficulty.equals("H"))) {
